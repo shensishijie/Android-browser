@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".homepage.Homepage">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        android:orientation="horizontal"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="300dp">
+
+
+        <EditText
+            android:id="@+id/url"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            android:hint="输入网址"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            tools:ignore="MissingConstraints" />
+        <Button
+            android:id="@+id/search0"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="search"
+            tools:ignore="MissingConstraints" />
+
+    </LinearLayout>
+    <!--    &lt;!&ndash;底部导航栏的使用？&ndash;&gt;-->
+    <!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
+    <!--        android:id="@+id/bottom_nav"-->
+    <!--        app:menu="@menu/menu_bottom_nav" />-->
+
+    <LinearLayout
+
+        style="?buttonBarButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:ignore="MissingConstraints">
+
+        <Button
+            android:id="@+id/go_for"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="0dp"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:text="back"
+            tools:ignore="ButtonStyle" />
+
+        <Button
+            android:id="@+id/go_next"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="0dp"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:text="next"
+            tools:ignore="ButtonStyle" />
+
+        <Button
+            android:id="@+id/go_home"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:text="home"
+            tools:ignore="ButtonStyle" />
+
+        <Button
+            android:id="@+id/detail"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:text="detail"
+            tools:ignore="ButtonStyle" />
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
