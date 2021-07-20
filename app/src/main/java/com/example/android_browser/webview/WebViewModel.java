@@ -1,27 +1,23 @@
 package com.example.android_browser.webview;
 
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-public class WebViewModel extends ViewModel {
+public class WebViewModel extends ViewModel implements Observer<CurrentData> {
     public WebViewModel() {
-
-    }
-    private MutableLiveData<String> currentUrl;
-    private MutableLiveData<String> currentTitle;
-
-    public MutableLiveData<String> getCurrentUrl() {
-        if (currentUrl == null) {
-            currentUrl = new MutableLiveData<String>();
-        }
-        return currentUrl;
+        //CurrentDataLiveData.getInstance().observe();
     }
 
-    public MutableLiveData<String> getCurrentTitle() {
-        if (currentTitle == null) {
-            currentTitle = new MutableLiveData<String>();
-        }
-        return currentTitle;
+    void collect() {
+
+        Log.d("WebViewModel", CurrentDataLiveData.getInstance().getValue().getCurrentTitle());
     }
 
+    @Override
+    public void onChanged(CurrentData currentData) {
+    }
 }

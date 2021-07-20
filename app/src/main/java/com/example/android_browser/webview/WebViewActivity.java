@@ -1,11 +1,15 @@
 package com.example.android_browser.webview;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.View;
@@ -15,6 +19,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -24,7 +29,7 @@ import com.example.android_browser.R;
 import static android.view.KeyEvent.KEYCODE_BACK;
 import static android.view.KeyEvent.KEYCODE_ENTER;
 
-public class WebViewActivity extends AppCompatActivity implements View.OnClickListener {
+public class WebViewActivity extends AppCompatActivity implements View.OnClickListener, Observer<CurrentData> {
 
     private WebView webView;
     //搜索栏
@@ -32,41 +37,48 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
 
     private ProgressBar progressBar;
 
-    private Button search;
+    private ImageView collect;
 
-    private Button go_for;
+    private ImageView search;
 
-    private Button go_next;
+    private ImageView go_for;
 
-    private Button home;
+    private ImageView go_next;
 
-    private Button refresh;
+    private ImageView home;
 
-    private Button detail;
+    private ImageView refresh;
+
+    private ImageView detail;
+
+    private WebViewModel webViewModel;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
-        WebViewModel webViewModel =new ViewModelProvider(this).get(WebViewModel.class);
+        webViewModel =new ViewModelProvider(this).get(WebViewModel.class);
+
+        CurrentDataLiveData.getInstance().observe(this,this);
 
         webView = (WebView) findViewById(R.id.web_view);
         url = (EditText) findViewById(R.id.url);
         progressBar = (ProgressBar) findViewById((R.id.progress_bar));
-        search = (Button) findViewById(R.id.search);
-        go_for = (Button) findViewById(R.id.go_for);
-        go_next = (Button) findViewById(R.id.go_next);
-        home = (Button) findViewById(R.id.go_home);
-        refresh = (Button) findViewById(R.id.refresh);
-        detail = (Button) findViewById(R.id.detail);
+        collect = (ImageView) findViewById(R.id.collect);
+        search = (ImageView) findViewById(R.id.search);
+        go_for = (ImageView) findViewById(R.id.go_for);
+        go_next = (ImageView) findViewById(R.id.go_next);
+        home = (ImageView) findViewById(R.id.go_home);
+        refresh = (ImageView) findViewById(R.id.refresh);
+        detail = (ImageView) findViewById(R.id.detail);
         search.setOnClickListener(this);
         go_for.setOnClickListener(this);
         go_next.setOnClickListener(this);
         home.setOnClickListener(this);
         refresh.setOnClickListener(this);
         detail.setOnClickListener(this);
-
+        collect.setOnClickListener(this);
 
 
         //设置webview部分属性
@@ -99,6 +111,7 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         webView.getSettings().setLoadsImagesAutomatically(true);
 
         //webView.loadUrl("https://www.baidu.com/");
+
         //设置前进或后退步数
 
         webView.goBackOrForward(1);
@@ -112,7 +125,7 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
                 if (newProgress == 100) {
-                    progressBar.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.INVISIBLE);
                     url.setText(webView.getTitle());
                     url.setSelection(url.getText().toString().length());
                 } else {
@@ -123,17 +136,18 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         });
 
         webView.setWebViewClient(new WebViewClient(){
-//            @Override
-//            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-//                super.onPageStarted(view, url, favicon);
-//            }
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+
+            }
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
 
-                webViewModel.getCurrentUrl().setValue(webView.getUrl());
-                webViewModel.getCurrentTitle().setValue(webView.getTitle());
+                super.onPageFinished(view, url);
+                //页面加载结束后存储当前网页信息
+                putCurrentData(webView.getUrl(),webView.getTitle());
             }
         });
 
@@ -150,6 +164,7 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         });
     }
 
+    //搜索功能
     private void search(String url_name) {
         String url_name1;
         if((!url_name.startsWith("https://")) && (!url_name.startsWith("http://"))) {
@@ -175,6 +190,9 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.collect:
+                webViewModel.collect();
+                break;
             case R.id.search:
                 search(url.getText().toString());
                 break;
@@ -212,6 +230,17 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    @Override
+    public void onChanged(CurrentData currentData) {
+        //这里可以用来存储历史记录
+        //Log.d("WebViewActivity", currentData.getCurrentTitle() + currentData.getCurrentUrl());
+    }
+
+    //传入当前页面信息放入LiveData
+    private void  putCurrentData(String url,String title) {
+        CurrentData currentData = new CurrentData(url,title);
+        CurrentDataLiveData.getInstance().setValue(currentData);
+    }
 //    @Override
 //    protected void onDestroy() {
 //        super.onDestroy();

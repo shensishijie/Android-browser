@@ -8,16 +8,26 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.android_browser.R;
 import com.example.android_browser.webview.WebViewActivity;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static android.view.KeyEvent.KEYCODE_ENTER;
 
 public class Homepage extends AppCompatActivity implements View.OnClickListener{
 
     private Button search;
+    //输入框
     private EditText url;
+
+    private static Boolean isQuit = false;
+
+    private Timer timer = new Timer();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,9 +48,31 @@ public class Homepage extends AppCompatActivity implements View.OnClickListener{
         });
     }
 
+    //连点两下退出
+    @Override
+    public void onBackPressed() {
+        if (!isQuit) {
+            isQuit = true;
+            Toast.makeText(getBaseContext(), "再按一次返回键退出程序", Toast.LENGTH_SHORT).show();
+            TimerTask task = null;
+            task = new TimerTask() {
+                @Override
+                public void run() {
+                    isQuit = false;
+                }
+            };
+            timer.schedule(task, 2000);
+        } else {
+            finish();
+            System.exit(0);
+            android.os.Process.killProcess(android.os.Process.myPid());
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            //点击搜索打开WebViewActivity
             case R.id.search0 :
                 Intent intent = new Intent(Homepage.this, WebViewActivity.class);
                 intent.putExtra("url0",url.getText().toString());
