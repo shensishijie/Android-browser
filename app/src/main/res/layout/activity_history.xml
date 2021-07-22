@@ -5,13 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="这行用来切换历史记录和书签"
-        android:textStyle="bold" />
-
     <ListView
         android:id="@+id/history_list"
         android:layout_width="match_parent"
