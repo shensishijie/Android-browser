@@ -1,9 +1,6 @@
 package com.example.android_browser.webview;
 
 import android.util.Log;
-import android.widget.Toast;
-
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 

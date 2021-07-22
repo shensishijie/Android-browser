@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.android_browser.R;
@@ -20,7 +20,7 @@ import static android.view.KeyEvent.KEYCODE_ENTER;
 
 public class Homepage extends AppCompatActivity implements View.OnClickListener{
 
-    private Button search;
+    private ImageButton search;
     //输入框
     private EditText url;
 
@@ -33,7 +33,7 @@ public class Homepage extends AppCompatActivity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage);
         url = (EditText) findViewById(R.id.url);
-        search = (Button) findViewById(R.id.search0);
+        search = findViewById(R.id.search0);
         search.setOnClickListener(this);
 
         //监听键盘回车搜索

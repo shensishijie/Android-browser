@@ -7,9 +7,7 @@ import androidx.lifecycle.ViewModelProvider;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.View;
@@ -17,7 +15,6 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -25,6 +22,7 @@ import android.widget.Toast;
 
 
 import com.example.android_browser.R;
+import com.example.android_browser.imageopen.ImageOpenJSInterface;
 
 import static android.view.KeyEvent.KEYCODE_BACK;
 import static android.view.KeyEvent.KEYCODE_ENTER;
@@ -58,20 +56,24 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
-        webViewModel =new ViewModelProvider(this).get(WebViewModel.class);
 
-        CurrentDataLiveData.getInstance().observe(this,this);
+        webViewModel = new ViewModelProvider(this).get(WebViewModel.class);
 
-        webView = (WebView) findViewById(R.id.web_view);
-        url = (EditText) findViewById(R.id.url);
-        progressBar = (ProgressBar) findViewById((R.id.progress_bar));
-        collect = (ImageView) findViewById(R.id.collect);
-        search = (ImageView) findViewById(R.id.search);
-        go_for = (ImageView) findViewById(R.id.go_for);
-        go_next = (ImageView) findViewById(R.id.go_next);
-        home = (ImageView) findViewById(R.id.go_home);
-        refresh = (ImageView) findViewById(R.id.refresh);
-        detail = (ImageView) findViewById(R.id.detail);
+        CurrentDataLiveData.getInstance().observe(this, this);
+
+        // Data binding
+        webView = findViewById(R.id.web_view);
+        url = findViewById(R.id.url);
+        progressBar = findViewById((R.id.progress_bar));
+        collect = findViewById(R.id.collect);
+        search = findViewById(R.id.search);
+        go_for = findViewById(R.id.go_for);
+        go_next = findViewById(R.id.go_next);
+        home = findViewById(R.id.go_home);
+        refresh = findViewById(R.id.refresh);
+        detail = findViewById(R.id.detail);
+
+        // Setting listener
         search.setOnClickListener(this);
         go_for.setOnClickListener(this);
         go_next.setOnClickListener(this);
@@ -83,6 +85,7 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
 
         //设置webview部分属性
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.addJavascriptInterface(new ImageOpenJSInterface(this), "imagelistener");
         webView.setWebViewClient(new WebViewClient());
 
         //设置 WebView 是否应该启用对“viewport”HTML 元标记的支持还是应该使用宽视口
@@ -110,17 +113,14 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         // 支持自动加载图片
         webView.getSettings().setLoadsImagesAutomatically(true);
 
-        //webView.loadUrl("https://www.baidu.com/");
-
         //设置前进或后退步数
-
         webView.goBackOrForward(1);
 
         //加载homepage中输入的网址或者搜索内容
         search(getIntent().getStringExtra("url0"));
 
         //设置进度条显示
-        webView.setWebChromeClient(new WebChromeClient(){
+        webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
@@ -135,19 +135,38 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
 
-        webView.setWebViewClient(new WebViewClient(){
+        webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
-
                 super.onPageFinished(view, url);
                 //页面加载结束后存储当前网页信息
-                putCurrentData(webView.getUrl(),webView.getTitle());
+                putCurrentData(webView.getUrl(), webView.getTitle());
+                //待网页加载完全后设置图片点击的监听方法
+                addImageClickListener(view);
+            }
+
+            private void addImageClickListener(WebView webView) {
+                webView.loadUrl("javascript:(function(){" +
+                        "var objs = document.getElementsByTagName(\"img\"); " +
+                        "var imageUrls = [];"+
+                        "for(var i=0;i<objs.length;i++)  " +
+                        "{" +
+                        "    imageUrls[i] = objs[i].src;   " +
+                        "    objs[i].onclick=function(e)  " +
+                        "    {  " +
+                        "        var oEvent = e || event;" +
+                        "        oEvent.cancelBubble = true;   " +
+                        "        oEvent.stopPropagation();" +
+                        "        window.imagelistener.openImage(this.src);  " +//通过js代码找到标签为img的代码块，设置点击的监听方法与本地的openImage方法进行连接
+                        "    };  " +
+                        "}" +
+                        "window.imagelistener.loadImageUrl(imageUrls);  " +
+                        "})()");
             }
         });
 
@@ -156,7 +175,7 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         url.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if((keyCode == KEYCODE_ENTER) && event.getAction() == KeyEvent.ACTION_DOWN) {
+                if ((keyCode == KEYCODE_ENTER) && event.getAction() == KeyEvent.ACTION_DOWN) {
                     onClick(search);
                 }
                 return false;
@@ -167,17 +186,18 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
     //搜索功能
     private void search(String url_name) {
         String url_name1;
-        if((!url_name.startsWith("https://")) && (!url_name.startsWith("http://"))) {
+        if ((!url_name.startsWith("https://")) && (!url_name.startsWith("http://"))) {
             url_name1 = "https://" + url_name;
         } else {
             url_name1 = url_name;
         }
-        if(Patterns.WEB_URL.matcher(url_name1).matches()){
+        if (Patterns.WEB_URL.matcher(url_name1).matches()) {
             webView.loadUrl(url_name1);
         } else {
             webView.loadUrl("https://www.baidu.com/s?wd=" + url_name);
         }
     }
+
     //同步系统返回键
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KEYCODE_BACK) && webView.canGoBack()) {
@@ -197,18 +217,18 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                 search(url.getText().toString());
                 break;
             case R.id.go_for:
-                if(webView.canGoBack()) {
+                if (webView.canGoBack()) {
                     webView.goBack();
                 } else {
-                    Toast.makeText(WebViewActivity.this,"没有上一页了",
+                    Toast.makeText(WebViewActivity.this, "没有上一页了",
                             Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.go_next:
-                if(webView.canGoForward()) {
+                if (webView.canGoForward()) {
                     webView.goForward();
                 } else {
-                    Toast.makeText(WebViewActivity.this,"没有下一页了",
+                    Toast.makeText(WebViewActivity.this, "没有下一页了",
                             Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -218,11 +238,11 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.refresh:
                 webView.loadUrl(webView.getUrl().toString());
-                Toast.makeText(WebViewActivity.this,"正在刷新",
+                Toast.makeText(WebViewActivity.this, "正在刷新",
                         Toast.LENGTH_SHORT).show();
                 break;
             case R.id.detail:
-                Toast.makeText(WebViewActivity.this,"这里应该弹出详细界面",
+                Toast.makeText(WebViewActivity.this, "这里应该弹出详细界面",
                         Toast.LENGTH_SHORT).show();
                 break;
             default:
@@ -237,8 +257,8 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     //传入当前页面信息放入LiveData
-    private void  putCurrentData(String url,String title) {
-        CurrentData currentData = new CurrentData(url,title);
+    private void putCurrentData(String url, String title) {
+        CurrentData currentData = new CurrentData(url, title);
         CurrentDataLiveData.getInstance().setValue(currentData);
     }
 //    @Override
