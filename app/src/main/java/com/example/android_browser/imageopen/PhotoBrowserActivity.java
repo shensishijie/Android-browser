@@ -26,6 +26,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.android_browser.R;
+import com.example.android_browser.utils.FileUtil;
 
 public class PhotoBrowserActivity extends Activity implements View.OnClickListener{
     private ViewPager mPager;
@@ -214,7 +215,7 @@ public class PhotoBrowserActivity extends Activity implements View.OnClickListen
             if (bitmap == null) {
                 return;
             }
-            FileUtils.savePhoto(this, bitmap, new FileUtils.SaveResultCallback() {
+            FileUtil.savePhoto(this, bitmap, new FileUtil.SaveResultCallback() {
                 @Override
                 public void onSavedSuccess() {
                     runOnUiThread(new Runnable() {

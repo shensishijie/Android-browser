@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="这行用来切换历史记录和书签"
+        android:textStyle="bold" />
+
+    <ListView
+        android:id="@+id/history_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+    </ListView>
+
+    <Button
+        android:id="@+id/clear"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_gravity="right"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:onClick="clear_dialog"
+        android:text="清除"
+        android:textColor="@color/design_default_color_primary"
+        android:textStyle="bold"
+        app:backgroundTint="#FFFFFF"
+        app:elevation="0dp" />
+
+</LinearLayout>

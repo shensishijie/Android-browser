@@ -22,7 +22,11 @@ import android.widget.Toast;
 
 
 import com.example.android_browser.R;
+import com.example.android_browser.history.HistoryActivity;
+import com.example.android_browser.history.SaveBookmarkService;
+import com.example.android_browser.homepage.HomepageActivity;
 import com.example.android_browser.imageopen.ImageOpenJSInterface;
+import com.example.android_browser.utils.DateUtil;
 
 import static android.view.KeyEvent.KEYCODE_BACK;
 import static android.view.KeyEvent.KEYCODE_ENTER;
@@ -57,6 +61,7 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
 
+
         webViewModel = new ViewModelProvider(this).get(WebViewModel.class);
 
         CurrentDataLiveData.getInstance().observe(this, this);
@@ -71,7 +76,7 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         go_next = findViewById(R.id.go_next);
         home = findViewById(R.id.go_home);
         refresh = findViewById(R.id.refresh);
-        detail = findViewById(R.id.detail);
+        detail = findViewById(R.id.history_open);
 
         // Setting listener
         search.setOnClickListener(this);
@@ -116,8 +121,14 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         //设置前进或后退步数
         webView.goBackOrForward(1);
 
+        String urlFromHistory = getIntent().getStringExtra(HistoryActivity.HISTORY_URL_EXTRA);
+        String urlFromHome = getIntent().getStringExtra("url0");
         //加载homepage中输入的网址或者搜索内容
-        search(getIntent().getStringExtra("url0"));
+        if (urlFromHistory != null && !urlFromHistory.isEmpty()) {
+            search(urlFromHistory);
+        } else if(urlFromHome != null && !urlFromHome.isEmpty()) {
+            search(urlFromHome);
+        }
 
         //设置进度条显示
         webView.setWebChromeClient(new WebChromeClient() {
@@ -148,6 +159,13 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                 putCurrentData(webView.getUrl(), webView.getTitle());
                 //待网页加载完全后设置图片点击的监听方法
                 addImageClickListener(view);
+
+                //保存当前URL到数据库中，方便历史记录模块使用
+                SaveBookmarkService saveBookmarkService = SaveBookmarkService.getInstance();
+                saveBookmarkService.add_DB(WebViewActivity.this,
+                                                    view.copyBackForwardList().getCurrentItem().getTitle(),
+                                                    view.copyBackForwardList().getCurrentItem().getUrl(),
+                                                    DateUtil.getDate());
             }
 
             private void addImageClickListener(WebView webView) {
@@ -233,7 +251,7 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                 }
                 break;
             case R.id.go_home:
-                Intent intent = new Intent("android.intent.action.MAIN");
+                Intent intent = new Intent(this, HomepageActivity.class);
                 startActivity(intent);
                 break;
             case R.id.refresh:
@@ -241,9 +259,10 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                 Toast.makeText(WebViewActivity.this, "正在刷新",
                         Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.detail:
-                Toast.makeText(WebViewActivity.this, "这里应该弹出详细界面",
-                        Toast.LENGTH_SHORT).show();
+            case R.id.history_open:
+                //跳转到历史记录页面
+                Intent webToHistoryIntent = new Intent(this, HistoryActivity.class);
+                this.startActivity(webToHistoryIntent);
                 break;
             default:
                 break;
@@ -261,10 +280,6 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         CurrentData currentData = new CurrentData(url, title);
         CurrentDataLiveData.getInstance().setValue(currentData);
     }
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//        webView.removeAllViews();
-//        webView.destroy();
-//    }
+
+
 }

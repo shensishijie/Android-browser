@@ -18,7 +18,7 @@ import java.util.TimerTask;
 
 import static android.view.KeyEvent.KEYCODE_ENTER;
 
-public class Homepage extends AppCompatActivity implements View.OnClickListener{
+public class HomepageActivity extends AppCompatActivity implements View.OnClickListener{
 
     private ImageButton search;
     //输入框
@@ -74,7 +74,7 @@ public class Homepage extends AppCompatActivity implements View.OnClickListener{
         switch (v.getId()) {
             //点击搜索打开WebViewActivity
             case R.id.search0 :
-                Intent intent = new Intent(Homepage.this, WebViewActivity.class);
+                Intent intent = new Intent(HomepageActivity.this, WebViewActivity.class);
                 intent.putExtra("url0",url.getText().toString());
                 startActivity(intent);
         }

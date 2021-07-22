@@ -116,14 +116,14 @@
             android:src="@drawable/ic_reload" />
 
         <ImageView
-            android:id="@+id/detail"
+            android:id="@+id/history_open"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:background="@color/white"
-            android:contentDescription="detail"
-            android:src="@drawable/ic_menu" />
+            android:contentDescription="open history page"
+            android:src="@drawable/ic_bookmark" />
 
     </LinearLayout>
 

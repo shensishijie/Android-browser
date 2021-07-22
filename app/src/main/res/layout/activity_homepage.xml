@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".homepage.Homepage">
+    tools:context=".homepage.HomepageActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -85,13 +85,13 @@
             tools:ignore="ButtonStyle" />
 
         <ImageButton
-            android:id="@+id/detail"
+            android:id="@+id/history_open"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:background="@color/white"
-            android:src="@drawable/ic_menu"
+            android:src="@drawable/ic_bookmark"
             tools:ignore="ButtonStyle" />
 
     </LinearLayout>
