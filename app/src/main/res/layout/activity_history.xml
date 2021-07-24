@@ -5,26 +5,52 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ListView
-        android:id="@+id/history_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
 
-    </ListView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="690dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="33dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:gravity="center_horizontal"
+                android:text="历史记录"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/history_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+        </ListView>
+    </LinearLayout>
 
     <Button
         android:id="@+id/clear"
         android:layout_width="wrap_content"
-        android:layout_height="36dp"
+        android:layout_height="match_parent"
         android:layout_gravity="right"
+        android:background="@null"
+        android:elevation="0dp"
         android:insetTop="0dp"
         android:insetBottom="0dp"
         android:onClick="clear_dialog"
         android:text="清除"
+        android:textAllCaps="false"
         android:textColor="@color/design_default_color_primary"
-        android:textStyle="bold"
-        app:backgroundTint="#FFFFFF"
-        app:elevation="0dp" />
+        android:textSize="16sp"
+        app:backgroundTint="#FFFFFF" />
 
 </LinearLayout>
