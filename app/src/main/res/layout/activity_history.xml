@@ -8,8 +8,12 @@
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="这行用来切换历史记录和书签"
+        android:layout_height="20dp"
+        android:gravity="center_horizontal"
+        android:text="历史记录"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        android:textSize="16sp"
         android:textStyle="bold" />
 
     <ListView
@@ -25,11 +29,14 @@
         android:layout_width="wrap_content"
         android:layout_height="36dp"
         android:layout_gravity="right"
+        android:background="?attr/listChoiceBackgroundIndicator"
+        android:inputType="text"
         android:insetTop="0dp"
         android:insetBottom="0dp"
         android:onClick="clear_dialog"
         android:text="清除"
         android:textColor="@color/design_default_color_primary"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:backgroundTint="#FFFFFF"
         app:elevation="0dp" />

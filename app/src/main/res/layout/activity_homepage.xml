@@ -92,7 +92,8 @@
             android:layout_weight="1"
             android:background="@color/white"
             android:src="@drawable/ic_bookmark"
-            tools:ignore="ButtonStyle" />
+            tools:ignore="ButtonStyle"
+            android:onClick="openHistory"/>
 
     </LinearLayout>
 

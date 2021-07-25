@@ -13,31 +13,38 @@
     <Button
         android:id="@+id/delete_all"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="58dp"
         android:layout_weight="1"
-        android:text="全部" />
+        android:text="全部"
+        android:textColor="@color/design_default_color_error"
+        android:textSize="16sp" />
 
     <Button
         android:id="@+id/delete_three"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="58dp"
         android:layout_weight="1"
-        android:text="近三天" />
+        android:text="近三天"
+        android:textColor="@color/design_default_color_error"
+        android:textSize="16sp" />
 
     <Button
         android:id="@+id/delete_today"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="58dp"
         android:layout_weight="1"
-        android:text="今天" />
+        android:text="今天"
+        android:textColor="@color/design_default_color_error"
+        android:textSize="16sp" />
 
     <Button
         android:id="@+id/cancel"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="58dp"
         android:layout_weight="1"
         android:text="取消"
         android:textColor="#2196F3"
+        android:textSize="16sp"
         android:textStyle="bold" />
 
 </LinearLayout>
