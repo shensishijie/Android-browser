@@ -17,6 +17,8 @@
         android:theme="@style/Theme.MyApplication2"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <activity android:name=".bookmarker.MarkerActivity"
+            android:exported="true"/>
         <activity
             android:name=".history.HistoryActivity"
             android:exported="true" />

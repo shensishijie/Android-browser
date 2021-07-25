@@ -21,7 +21,9 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
+import com.example.android_browser.bookmarker.MarkerActivity;
 import com.example.android_browser.R;
+import com.example.android_browser.bookmarker.SaveBookMarker;
 import com.example.android_browser.history.HistoryActivity;
 import com.example.android_browser.history.SaveBookmarkService;
 import com.example.android_browser.homepage.HomepageActivity;
@@ -86,7 +88,6 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         refresh.setOnClickListener(this);
         detail.setOnClickListener(this);
         collect.setOnClickListener(this);
-
 
         //设置webview部分属性
         webView.getSettings().setJavaScriptEnabled(true);
@@ -200,7 +201,6 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
     }
-
     //搜索功能
     private void search(String url_name) {
         String url_name1;
@@ -229,7 +229,10 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.collect:
-                webViewModel.collect();
+                //点击跳转书签页面
+                Intent webToBookMarkerIntent = new Intent(this, MarkerActivity.class);
+                this.startActivity(webToBookMarkerIntent);
+                Toast.makeText(WebViewActivity.this,"跳转至书签",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.search:
                 search(url.getText().toString());
@@ -267,8 +270,22 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
             default:
                 break;
         }
+        //长按将本页面添加至书签
+        collect.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                SaveBookMarker();
+                Toast.makeText(WebViewActivity.this,"已加入书签",Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
     }
-
+    public void SaveBookMarker(){
+        SaveBookMarker saveBookMarker = SaveBookMarker.getInstance();
+        saveBookMarker.add_DB(WebViewActivity.this,
+                webView.getTitle(),
+                webView.getUrl());
+    }
     @Override
     public void onChanged(CurrentData currentData) {
         //这里可以用来存储历史记录
@@ -280,6 +297,4 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         CurrentData currentData = new CurrentData(url, title);
         CurrentDataLiveData.getInstance().setValue(currentData);
     }
-
-
 }

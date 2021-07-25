@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">A Little Browser</string>
+    <string name="BookMarker">BookMarker</string>
 </resources>
